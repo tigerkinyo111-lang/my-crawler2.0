@@ -1,0 +1,7 @@
+selenium==4.18.1
+undetected-chromedriver==3.5.5
+beautifulsoup4==4.12.3
+python-telegram-bot==20.8
+apscheduler==3.10.4
+PyYAML==6.0.1
+setuptools

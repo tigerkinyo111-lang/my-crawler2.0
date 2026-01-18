@@ -1,0 +1,28 @@
+# config.yaml
+# 請在此填入您的目標網站資訊
+
+# 1. 網站設定
+login_url: https://wc.lyf567.com/          # 登入頁面網址
+search_page_url: https://g1c.lyf567.com/i1W5WyKRh06Kn_s0PaA9rw/Admin/Shared/Index    # 搜尋頁面 (若登入後不自動跳轉，會用到)
+
+# 2. 登入欄位與按鈕 (請透過右鍵 -> 檢查 -> Copy Selector)
+selectors:
+  login_user: body > div.AllSet > div.loginmain > div > table > tbody > tr:nth-child(1) > td:nth-child(2) > input  # 帳號欄位
+  login_pass: body > div.AllSet > div.loginmain > div > table > tbody > tr:nth-child(2) > td:nth-child(2) > input
+  login_btn:  body > div.AllSet > div.loginmain > div > table > tbody > tr:nth-child(4) > td > a  # 登入按鈕
+  
+  # 搜尋部分 (登入後)
+  search_input: "input#keyword"       # 搜尋輸入框 (若不需要輸入可留空)
+  search_btn:   body > div.banner > div.menu1 > a.selected
+
+# 3. 搜尋參數 (只有在有輸入框時才需要)
+search_keyword: "Test"
+
+# 4. 資料欄位選擇器 (最後結果頁要抓什麼)
+fields:
+  - name: "標題"
+    selector: "table.result-table tr.item td.title"
+  - name: "價格"
+    selector: ".price-tag"
+  - name: "狀態"
+    selector: "#status-label"
