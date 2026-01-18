@@ -3,6 +3,7 @@ import logging
 import yaml
 import time
 import asyncio
+import requests  
 from datetime import datetime, timedelta, timedelta
 from bs4 import BeautifulSoup
 from telegram import Bot
@@ -16,6 +17,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 # 設定日誌
+# 代理配置  
+PROXY = "http://8.210.148.99:1122"  
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO
@@ -48,6 +51,10 @@ def get_driver():
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-gpu")
+        # 添加代理配置  
+    options.add_argument(f"--proxy-server={PROXY}")  
+    logger.info(f"🌐 已配置代理: {PROXY}")  
+
     
     # [新增] 禁用「儲存密碼」提示與自動填入
     prefs = {
@@ -411,4 +418,5 @@ if __name__ == "__main__":
         logger.info("⏳ 等待排程觸發 (按 Ctrl+C 停止)...")
         scheduler.start()
     except (KeyboardInterrupt, SystemExit):
+
         pass
