@@ -4,7 +4,6 @@ LABEL "language"="python"
 WORKDIR /app
 
 # 安裝系統依賴 (Chrome/Chromium 所需的套件)
-# 移除已棄用的 libgconf-2-4，使用 Debian Trixie 相容的依賴
 RUN apt-get update && apt-get install -y \
     wget \
     gnupg \
@@ -22,12 +21,15 @@ RUN apt-get update && apt-get install -y \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-# 安裝 Google Chrome Stable
-RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-    && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list' \
-    && apt-get update \
-    && apt-get install -y google-chrome-stable \
-    && rm -rf /var/lib/apt/lists/*
+# 安裝 Google Chrome Stable (使用新的密鑰管理方式)
+RUN mkdir -p /etc/apt/keyrings && \
+    wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | \
+    gpg --dearmor -o /etc/apt/keyrings/google-chrome.gpg && \
+    echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" | \
+    tee /etc/apt/sources.list.d/google-chrome.list > /dev/null && \
+    apt-get update && \
+    apt-get install -y google-chrome-stable && \
+    rm -rf /var/lib/apt/lists/*
 
 # 複製 requirements.txt 並安裝 Python 套件
 COPY requirements.txt .
