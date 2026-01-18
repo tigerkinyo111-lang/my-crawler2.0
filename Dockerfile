@@ -1,18 +1,16 @@
-# 使用 Python 3.10 作為基底映像
 FROM python:3.10-slim
+LABEL "language"="python"
 
-# 設定工作目錄
 WORKDIR /app
 
-# 安裝系統依賴 (包含 Chrome 所需的套件)
-# 這裡會安裝 wget, gnupg, unzip 以及 Chrome 依賴庫
+# 安裝系統依賴 (Chrome/Chromium 所需的套件)
+# 移除已棄用的 libgconf-2-4，使用 Debian Trixie 相容的依賴
 RUN apt-get update && apt-get install -y \
     wget \
     gnupg \
     unzip \
     xvfb \
     libxi6 \
-    libgconf-2-4 \
     libnss3 \
     libxss1 \
     libasound2 \
@@ -21,10 +19,10 @@ RUN apt-get update && apt-get install -y \
     libnspr4 \
     libgbm1 \
     curl \
+    ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
 # 安裝 Google Chrome Stable
-# 注意: undetected-chromedriver 通常會自動下載對應的 driver，但需要系統有 Chrome 瀏覽器
 RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
     && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list' \
     && apt-get update \
@@ -38,10 +36,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 # 複製所有程式碼
 COPY . .
 
-# 設定環境變數 (可由 Zeabur 儀表板覆蓋)
-# ENV BOT_TOKEN=your_token
-# ENV CHAT_ID=your_chat_id
+EXPOSE 8080
 
-# 啟動指令
-# 使用 python -u (unbuffered) 確保日誌即時輸出
 CMD ["python", "-u", "crawler_bot.py"]
